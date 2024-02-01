@@ -65,10 +65,10 @@ def __get_zip_file_content__(name, file_name="/html/flot.zip"):
 	zip_file.close()
 	return content.decode("utf-8", "replace")
 
-INFO_ONE_REPOSITORY = N_("Statistical information for the repository '{0}' was gathered on {1}.")
-INFO_MANY_REPOSITORIES = N_("Statistical information for the repositories '{0}' was gathered on {1}.")
+INFO_ONE_REPOSITORY = N_("Statistical information for '{2}' branch of the repository '{0}' was gathered on {1}.")
+INFO_MANY_REPOSITORIES = N_("Statistical information for '{2}' branch of the repositories '{0}' was gathered on {1}.")
 
-def output_header(repos):
+def output_header(repos, branch):
 	repos_string = ", ".join([repo.name for repo in repos])
 
 	if __selected_format__ == "html" or __selected_format__ == "htmlembedded":
@@ -103,7 +103,7 @@ def output_header(repos):
 					               "<a href=\"https://github.com/ejwa/gitinspector\">gitinspector</a>",
 		                                       version.__version__),
 		                         repo_text=_(INFO_ONE_REPOSITORY if len(repos) <= 1 else INFO_MANY_REPOSITORIES).format(
-		                                     repos_string, localization.get_date()),
+		                                     repos_string, localization.get_date(), branch),
 		                         show_minor_authors=_("Show minor authors"),
 		                         hide_minor_authors=_("Hide minor authors"),
 		                         show_minor_rows=_("Show rows with minor work"),
@@ -141,7 +141,7 @@ def output_header(repos):
 		print("\t<report-date>" + time.strftime("%Y/%m/%d") + "</report-date>")
 	else:
 		print(textwrap.fill(_(INFO_ONE_REPOSITORY if len(repos) <= 1 else INFO_MANY_REPOSITORIES).format(
-		      repos_string, localization.get_date()), width=terminal.get_size()[0]))
+		      repos_string, localization.get_date(), branch), width=terminal.get_size()[0]))
 
 def output_footer():
 	if __selected_format__ == "html" or __selected_format__ == "htmlembedded":

@@ -119,8 +119,11 @@ msgid "Stability"
 msgstr "稳定性"
 
 #, python-brace-format
-msgid "Statistical information for the repository '{0}' was gathered on {1}."
-msgstr "代码库{0}于{1}采集的统计数据"
+msgid "Statistical information for '{2}' branch of the repository '{0}' was gathered on {1}."
+msgstr "代码库 {0} ，分支 {2} 于 {1} 采集的统计数据"
+
+msgid "Statistical information for '{2}' branch of the repositories '{0}' was gathered on {1}."
+msgstr "代码库 {0} ，分支 {2} 于 {1} 采集的统计数据"
 
 msgid "Text output not yet supported in"
 msgstr "文本输出暂不支持"

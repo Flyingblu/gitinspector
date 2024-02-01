@@ -84,7 +84,7 @@ class Runner(object):
 		else:
 			os.chdir(previous_directory)
 
-		format.output_header(repos)
+		format.output_header(repos, interval.get_start_ref())
 		outputable.output(ChangesOutput(summed_changes))
 
 		if summed_changes.get_commits():
