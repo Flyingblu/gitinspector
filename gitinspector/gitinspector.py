@@ -136,7 +136,7 @@ def main():
 		opts, args = optval.gnu_getopt(argv[1:], "f:F:hHlLmrTwx:", ["exclude=", "file-types=", "format=",
 		                                         "hard:true", "help", "list-file-types:true", "localize-output:true",
 		                                         "metrics:true", "responsibilities:true", "since=", "grading:true",
-		                                         "timeline:true", "until=", "version", "weeks:true"])
+		                                         "timeline:true", "until=", "version", "weeks:true", "set-locale="])
 		repos = __get_validated_git_repos__(set(args))
 
 		#We need the repos above to be set before we read the git config.
@@ -164,6 +164,9 @@ def main():
 				run.localize_output = True
 			elif o == "--localize-output":
 				run.localize_output = optval.get_boolean_argument(a)
+			elif o == "--set-locale":
+				run.localize_output = True
+				localization.set_locale(a)
 			elif o == "-m":
 				run.include_metrics = True
 			elif o == "--metrics":

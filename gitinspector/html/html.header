@@ -215,7 +215,7 @@
 			}}
 			body > div {{
 				margin: 0 auto;
-				width: 58em;
+				width: 65vw;
 			}}
 			div.box {{
 				border: 4px solid #ddd;
