@@ -45,7 +45,7 @@ class ChangesOutput(Outputable):
 
 		if authorinfo_list:
 			changes_xml += "<p>" + _(HISTORICAL_INFO_TEXT) + ".</p><div><table id=\"changes\" class=\"git\">"
-			changes_xml += "<thead><tr> <th>{0}</th> <th>{1}</th> <th>{2}</th> <th>{3}</th> <th>{4}</th> <th>{5}</th>".format(
+			changes_xml += '<thead><tr> <th class="sticky-header">{0}</th> <th class="sticky-header">{1}</th> <th class="sticky-header">{2}</th> <th class="sticky-header">{3}</th> <th class="sticky-header">{4}</th> <th class="sticky-header">{5}</th>'.format(
 			               _("Author"), _("Commits"), _("Modifications"), _("Insertions"), _("Deletions"), _("% of changes"))
 			changes_xml += "</tr></thead><tbody>"
 

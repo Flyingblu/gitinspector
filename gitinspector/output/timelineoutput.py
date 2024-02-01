@@ -60,10 +60,10 @@ def __output_row__text__(timeline_data, periods, names):
 	print("")
 
 def __output_row__html__(timeline_data, periods, names):
-	timeline_xml = "<table class=\"git full\"><thead><tr><th>" + _("Author") + "</th>"
+	timeline_xml = '<table class=\"git full\"><thead><tr><th class="sticky-header">' + _("Author") + "</th>"
 
 	for period in periods:
-		timeline_xml += "<th>" + str(period) + "</th>"
+		timeline_xml += '<th class="sticky-header">' + str(period) + "</th>"
 
 	timeline_xml += "</tr></thead><tbody>"
 	i = 0
