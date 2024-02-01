@@ -45,13 +45,14 @@ class ChangesOutput(Outputable):
 
 		if authorinfo_list:
 			changes_xml += "<p>" + _(HISTORICAL_INFO_TEXT) + ".</p><div><table id=\"changes\" class=\"git\">"
-			changes_xml += "<thead><tr> <th>{0}</th> <th>{1}</th> <th>{2}</th> <th>{3}</th> <th>{4}</th>".format(
-			               _("Author"), _("Commits"), _("Insertions"), _("Deletions"), _("% of changes"))
+			changes_xml += "<thead><tr> <th>{0}</th> <th>{1}</th> <th>{2}</th> <th>{3}</th> <th>{4}</th> <th>{5}</th>".format(
+			               _("Author"), _("Commits"), _("Modifications"), _("Insertions"), _("Deletions"), _("% of changes"))
 			changes_xml += "</tr></thead><tbody>"
 
 			for i, entry in enumerate(sorted(authorinfo_list)):
 				authorinfo = authorinfo_list.get(entry)
-				percentage = 0 if total_changes == 0 else (authorinfo.insertions + authorinfo.deletions) / total_changes * 100
+				modifications = authorinfo.insertions + authorinfo.deletions
+				percentage = 0 if total_changes == 0 else modifications / total_changes * 100
 
 				changes_xml += "<tr " + ("class=\"odd\">" if i % 2 == 1 else ">")
 
@@ -63,6 +64,7 @@ class ChangesOutput(Outputable):
 					changes_xml += "<td>{0}<br/><i>{1}<i/></td>".format(entry, author_email)
 
 				changes_xml += "<td>" + str(authorinfo.commits) + "</td>"
+				changes_xml += "<td>" + str(modifications) + "</td>"
 				changes_xml += "<td>" + str(authorinfo.insertions) + "</td>"
 				changes_xml += "<td>" + str(authorinfo.deletions) + "</td>"
 				changes_xml += "<td>" + "{0:.2f}".format(percentage) + "</td>"
@@ -72,7 +74,7 @@ class ChangesOutput(Outputable):
 				if sorted(authorinfo_list)[-1] != entry:
 					chart_data += ", "
 
-			changes_xml += ("<tfoot><tr> <td colspan=\"5\">&nbsp;</td> </tr></tfoot></tbody></table>")
+			changes_xml += ("<tfoot><tr> <td colspan=\"6\">&nbsp;</td> </tr></tfoot></tbody></table>")
 			changes_xml += "<div class=\"chart\" id=\"changes_chart\"></div></div>"
 			changes_xml += "<script type=\"text/javascript\">"
 			changes_xml += "    changes_plot = $.plot($(\"#changes_chart\"), [{0}], {{".format(chart_data)
