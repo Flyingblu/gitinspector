@@ -184,9 +184,12 @@ class Changes(object):
 
 	def __init__(self, repo, hard):
 		self.commits = []
-		interval.set_ref("HEAD");
+		if interval.get_start_ref() is not None:
+			interval.set_ref(interval.get_start_ref())
+		else:
+			interval.set_ref("HEAD")
 		git_rev_list_p = subprocess.Popen(filter(None, ["git", "rev-list", "--reverse", "--no-merges",
-		                                  interval.get_since(), interval.get_until(), "HEAD"]), bufsize=1,
+		                                  interval.get_since(), interval.get_until(), interval.get_ref()]), bufsize=1,
 		                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		lines = git_rev_list_p.communicate()[0].splitlines()
 		git_rev_list_p.stdout.close()
@@ -207,8 +210,7 @@ class Changes(object):
 					ChangesThread.create(hard, self, first_hash, second_hash, i)
 					first_hash = entry + ".."
 
-					if format.is_interactive_format():
-						terminal.output_progress(progress_text, i, len(lines))
+					terminal.output_progress(progress_text, i, len(lines))
 			else:
 				if CHANGES_PER_THREAD - 1 != i % CHANGES_PER_THREAD:
 					entry = entry.decode("utf-8", "replace").strip()

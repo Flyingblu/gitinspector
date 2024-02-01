@@ -30,6 +30,8 @@ __until__ = ""
 
 __ref__ = "HEAD"
 
+__start_ref__ = None
+
 def has_interval():
 	return __since__ + __until__ != ""
 
@@ -53,3 +55,10 @@ def get_ref():
 def set_ref(ref):
 	global __ref__
 	__ref__ = ref
+
+def get_start_ref():
+	return __start_ref__
+
+def set_start_ref(ref):
+	global __start_ref__
+	__start_ref__ = ref

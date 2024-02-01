@@ -50,6 +50,7 @@ class Runner(object):
 		self.grading = False
 		self.timeline = False
 		self.useweeks = False
+		self.pull_branch = False
 
 	def process(self, repos):
 		localization.check_compatibility(version.__version__)
@@ -65,6 +66,7 @@ class Runner(object):
 		summed_metrics = MetricsLogic.__new__(MetricsLogic)
 
 		for repo in repos:
+			print('Processing repo {}'.format(repo.name))
 			os.chdir(repo.location)
 			repo = repo if len(repos) > 1 else None
 			changes = Changes(repo, self.hard)
@@ -136,7 +138,8 @@ def main():
 		opts, args = optval.gnu_getopt(argv[1:], "f:F:hHlLmrTwx:", ["exclude=", "file-types=", "format=",
 		                                         "hard:true", "help", "list-file-types:true", "localize-output:true",
 		                                         "metrics:true", "responsibilities:true", "since=", "grading:true",
-		                                         "timeline:true", "until=", "version", "weeks:true", "set-locale="])
+		                                         "timeline:true", "until=", "version", "weeks:true", "set-locale=",
+																	"set-branch=", "pull-branch:false"])
 		repos = __get_validated_git_repos__(set(args))
 
 		#We need the repos above to be set before we read the git config.
@@ -167,6 +170,10 @@ def main():
 			elif o == "--set-locale":
 				run.localize_output = True
 				localization.set_locale(a)
+			elif o == "--set-branch":
+				interval.set_start_ref(a)
+			elif o == "--pull-branch":
+				run.pull_branch = optval.get_boolean_argument(a)
 			elif o == "-m":
 				run.include_metrics = True
 			elif o == "--metrics":

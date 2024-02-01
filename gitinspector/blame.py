@@ -149,8 +149,7 @@ class Blame(object):
 					thread.daemon = True
 					thread.start()
 
-					if format.is_interactive_format():
-						terminal.output_progress(progress_text, i, len(lines))
+					terminal.output_progress(progress_text, i, len(lines))
 
 			# Make sure all threads have completed.
 			for i in range(0, NUM_THREADS):
