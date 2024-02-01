@@ -28,7 +28,7 @@ from .changes import Changes
 from .config import GitConfig
 from .metrics import MetricsLogic
 from . import (basedir, clone, extensions, filtering, format, help, interval,
-               localization, optval, terminal, version)
+			   localization, optval, terminal, version, gitutils)
 from .output import outputable
 from .output.blameoutput import BlameOutput
 from .output.changesoutput import ChangesOutput
@@ -68,7 +68,10 @@ class Runner(object):
 		for repo in repos:
 			print('Processing repo {}'.format(repo.name))
 			os.chdir(repo.location)
-			repo = repo if len(repos) > 1 else None
+			if self.pull_branch:
+				gitutils.pull_branch("" if interval.get_start_ref() is None else interval.get_start_ref())
+				print('Pulled branch {0} of repository {1}'.format(interval.get_start_ref(), repo.name))
+
 			changes = Changes(repo, self.hard)
 			summed_blames += Blame(repo, self.hard, self.useweeks, changes)
 			summed_changes += changes
@@ -139,7 +142,7 @@ def main():
 		                                         "hard:true", "help", "list-file-types:true", "localize-output:true",
 		                                         "metrics:true", "responsibilities:true", "since=", "grading:true",
 		                                         "timeline:true", "until=", "version", "weeks:true", "set-locale=",
-																	"set-branch=", "pull-branch:false"])
+																	"set-branch=", "pull-branch:true"])
 		repos = __get_validated_git_repos__(set(args))
 
 		#We need the repos above to be set before we read the git config.
