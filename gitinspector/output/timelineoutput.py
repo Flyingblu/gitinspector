@@ -73,9 +73,9 @@ def __output_row__html__(timeline_data, periods, names):
 			timeline_xml += "<tr" + (" class=\"odd\">" if i % 2 == 1 else ">")
 
 			if format.get_selected() == "html":
-				timeline_xml += "<td><img src=\"{0}\"/>{1}</td>".format(gravatar.get_url(name[1]), name[0])
+				timeline_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(gravatar.get_url(name[1]), name[0], name[1])
 			else:
-				timeline_xml += "<td>" + name[0] + "</td>"
+				timeline_xml += "<td>{0}<br/><i>{1}<i/></td>".format(name[0], name[1])
 
 			for period in periods:
 				multiplier = timeline_data.get_multiplier(period, 18)

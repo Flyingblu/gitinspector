@@ -55,11 +55,12 @@ class ChangesOutput(Outputable):
 
 				changes_xml += "<tr " + ("class=\"odd\">" if i % 2 == 1 else ">")
 
+				author_email = self.changes.get_latest_email_by_author(entry)
 				if format.get_selected() == "html":
-					changes_xml += "<td><img src=\"{0}\"/>{1}</td>".format(
-					               gravatar.get_url(self.changes.get_latest_email_by_author(entry)), entry)
+					changes_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(
+					               gravatar.get_url(author_email), entry, author_email)
 				else:
-					changes_xml += "<td>" + entry + "</td>"
+					changes_xml += "<td>{0}<br/><i>{1}<i/></td>".format(entry, author_email)
 
 				changes_xml += "<td>" + str(authorinfo.commits) + "</td>"
 				changes_xml += "<td>" + str(authorinfo.insertions) + "</td>"
