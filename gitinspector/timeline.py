@@ -76,6 +76,18 @@ class TimelineData(object):
 		else:
 			return (0, 0)
 
+	def get_author_modification_in_period(self, author, period):
+		authorinfo = self.entries.get((author, period), None)
+		total = float(self.total_changes_by_period[period][2])
+
+		if authorinfo:
+			i = self.entries[(author, period)].insertions
+			j = self.entries[(author, period)].deletions
+			percentage = (i + j) / total
+			return (int(i), int(j), percentage)
+		else:
+			return (0, 0, 0)
+
 	def get_multiplier(self, period, max_width):
 		multiplier = 0
 

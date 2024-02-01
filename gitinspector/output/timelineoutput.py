@@ -78,12 +78,12 @@ def __output_row__html__(timeline_data, periods, names):
 				timeline_xml += "<td>{0}<br/><i>{1}<i/></td>".format(name[0], name[1])
 
 			for period in periods:
-				multiplier = timeline_data.get_multiplier(period, 18)
-				signs = timeline_data.get_author_signs_in_period(name[0], period, multiplier)
-				signs_str = (signs[1] * "<div class=\"remove\">&nbsp;</div>" + signs[0] * "<div class=\"insert\">&nbsp;</div>")
-
-				timeline_xml += "<td>" + ("." if timeline_data.is_author_in_period(period, name[0]) and len(signs_str) == 0 else signs_str)
-				timeline_xml += "</td>"
+				modification = timeline_data.get_author_modification_in_period(name[0], period)
+				if modification[0] == 0 and modification[1] == 0:
+					timeline_xml += "<td>-</td>"
+				else:
+					timeline_xml += ("<td><div><span style=\"color: green;\">+{0}</span><br/><span style=\"color: red;\">-{1}</span><br/>{2:.2f}%</div></td>"
+									 .format(modification[0], modification[1], modification[2] * 100))
 			timeline_xml += "</tr>"
 			i = i + 1
 
