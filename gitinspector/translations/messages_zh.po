@@ -103,8 +103,8 @@ msgid "No metrics violations were found in the repository"
 msgstr "未在代码库中发现违反指标"
 
 #, python-brace-format
-msgid "Repository statistics for {0}"
-msgstr "关于{0}代码库统计数据"
+msgid "Repository statistics for '{0}'"
+msgstr "代码库 {0} 的统计数据"
 
 msgid "Rows"
 msgstr "行数"
