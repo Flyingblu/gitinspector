@@ -44,13 +44,13 @@
 					}}).hide();
 				}}
 
-				$("table#changes tbody tr td:last-child").filter(function() {{
-					return parseFloat(this.innerHTML) < MINOR_AUTHOR_PERCENTAGE;
-				}}).parent().hide();
+				// $("table#changes tbody tr td:last-child").filter(function() {{
+				// 	return parseFloat(this.innerHTML) < MINOR_AUTHOR_PERCENTAGE;
+				// }}).parent().hide();
 
-				$("table#blame tbody tr td:last-child").filter(function() {{
-					return parseFloat(this.innerHTML) < MINOR_AUTHOR_PERCENTAGE;
-				}}).parent().hide();
+				// $("table#blame tbody tr td:last-child").filter(function() {{
+				// 	return parseFloat(this.innerHTML) < MINOR_AUTHOR_PERCENTAGE;
+				// }}).parent().hide();
 
 				$("table.git tbody tr:visible").each(colorRows);
 
@@ -101,7 +101,7 @@
 					}}
 				}});
 
-				filterResponsibilities();
+				// filterResponsibilities();
 				var hiddenResponsibilitiesCount = $("div#responsibilities div h3:hidden").length;
 				if (hiddenResponsibilitiesCount > 0) {{
 					$("div#responsibilities div h3:visible").each(colorRows);
