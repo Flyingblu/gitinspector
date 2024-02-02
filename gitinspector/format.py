@@ -67,8 +67,9 @@ def __get_zip_file_content__(name, file_name="/html/flot.zip"):
 
 INFO_ONE_REPOSITORY = N_("Statistical information for '{2}' branch of the repository '{0}' was gathered on {1}.")
 INFO_MANY_REPOSITORIES = N_("Statistical information for '{2}' branch of the repositories '{0}' was gathered on {1}.")
+RUN_OPTS = N_("Run options: [{0}]")
 
-def output_header(repos, branch):
+def output_header(repos, branch, opts):
 	repos_string = ", ".join([repo.name for repo in repos])
 
 	if __selected_format__ == "html" or __selected_format__ == "htmlembedded":
@@ -104,6 +105,7 @@ def output_header(repos, branch):
 		                                       version.__version__),
 		                         repo_text=_(INFO_ONE_REPOSITORY if len(repos) <= 1 else INFO_MANY_REPOSITORIES).format(
 		                                     repos_string, localization.get_date(), branch),
+								 run_opts=_(RUN_OPTS).format(opts),
 		                         show_minor_authors=_("Show minor authors"),
 		                         hide_minor_authors=_("Hide minor authors"),
 		                         show_minor_rows=_("Show rows with minor work"),

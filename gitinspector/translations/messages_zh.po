@@ -109,6 +109,9 @@ msgstr "关于{0}代码库统计数据"
 msgid "Rows"
 msgstr "行数"
 
+msgid "Run options: [{0}]"
+msgstr "命令行参数：[{0}]"
+
 msgid "Show minor authors"
 msgstr "显示次要作者"
 

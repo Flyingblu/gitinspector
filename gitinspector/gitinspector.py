@@ -51,6 +51,10 @@ class Runner(object):
 		self.timeline = False
 		self.useweeks = False
 		self.pull_branch = False
+		self.__opts__ = {}
+
+	def set_opts(self, opts):
+		self.__opts__ = opts
 
 	def process(self, repos):
 		localization.check_compatibility(version.__version__)
@@ -84,7 +88,7 @@ class Runner(object):
 		else:
 			os.chdir(previous_directory)
 
-		format.output_header(repos, interval.get_start_ref())
+		format.output_header(repos, interval.get_start_ref(), ' '.join('{} {}'.format(k, v) for k, v in self.__opts__))
 		outputable.output(ChangesOutput(summed_changes))
 
 		if summed_changes.get_commits():
@@ -216,6 +220,7 @@ def main():
 				filtering.add(a)
 
 		__check_python_version__()
+		run.set_opts(opts)
 		run.process(repos)
 
 	except (filtering.InvalidRegExpError, format.InvalidFormatError, optval.InvalidOptionArgument, getopt.error) as exception:
