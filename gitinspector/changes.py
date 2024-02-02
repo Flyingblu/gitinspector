@@ -75,6 +75,8 @@ class FileDiff(object):
 
 class Commit(object):
 	def __init__(self, string):
+		# get rid of the double quotes
+		string = string[1:-1]
 		self.filediffs = []
 		commit_line = string.split("|")
 
@@ -101,7 +103,7 @@ class Commit(object):
 
 	@staticmethod
 	def is_commit_line(string):
-		return string.startswith('"COMMIT|') or string.startswith('COMMIT|')
+		return string.startswith('"COMMIT|')
 
 
 class AuthorInfo(object):
@@ -116,7 +118,6 @@ PROGRESS_TEXT = N_("Fetching and calculating primary statistics (1 of 2): {0:.0f
 class Changes(object):
 	authors = {}
 	authors_dateinfo = {}
-	emails_by_author = {}
 
 	def __init__(self, repo, hard):
 		worker_pool = ThreadPoolExecutor(max_workers=NUM_THREADS)
@@ -171,7 +172,6 @@ class Changes(object):
 		try:
 			self.authors.update(other.authors)
 			self.authors_dateinfo.update(other.authors_dateinfo)
-			self.emails_by_author.update(other.emails_by_author)
 
 			for commit in other.commits:
 				bisect.insort(self.commits, commit)
@@ -189,12 +189,6 @@ class Changes(object):
 
 		for i in range(start_idx, end_idx):
 			j = self.lines[i]
-
-			if Commit.is_commit_line(j):
-				# get rid of the double quotes
-				j = j[1:-1]
-				(author, email) = Commit.get_author_and_email(j)
-				self.emails_by_author[author] = email
 
 			if Commit.is_commit_line(j) or i == end_idx - 1:
 				if found_valid_extension:
@@ -248,6 +242,3 @@ class Changes(object):
 				Changes.modify_authorinfo(self.authors_dateinfo, (i.date, i.author, i.email), i)
 
 		return self.authors_dateinfo
-
-	def get_latest_email_by_author(self, name):
-		return self.emails_by_author[name]

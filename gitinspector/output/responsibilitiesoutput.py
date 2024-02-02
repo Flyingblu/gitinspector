@@ -59,18 +59,18 @@ class ResponsibilitiesOutput(Outputable):
 		resp_xml = "<div><div class=\"box\" id=\"responsibilities\">"
 		resp_xml += "<p>" + _(RESPONSIBILITIES_INFO_TEXT) + ".</p>"
 
-		for i in sorted(set(i[0] for i in self.blame.blames)):
-			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i)), reverse=True)
+		for i in sorted(set((i[0], i[1]) for i in self.blame.blames)):
+			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i[0], i[1])), reverse=True)
 
 			if responsibilities:
 				resp_xml += "<div>"
 
 				if format.get_selected() == "html":
-					author_email = self.changes.get_latest_email_by_author(i)
+					author_email = i[1]
 					resp_xml += "<h3><img src=\"{0}\"/>{1} {2}</h3>".format(gravatar.get_url(author_email, size=32),
-					            i, _(MOSTLY_RESPONSIBLE_FOR_TEXT))
+					            i[0], _(MOSTLY_RESPONSIBLE_FOR_TEXT))
 				else:
-					resp_xml += "<h3>{0} {1}</h3>".format(i, _(MOSTLY_RESPONSIBLE_FOR_TEXT))
+					resp_xml += "<h3>{0} {1}</h3>".format(i[0], _(MOSTLY_RESPONSIBLE_FOR_TEXT))
 
 				for j, entry in enumerate(responsibilities):
 					resp_xml += "<div" + (" class=\"odd\">" if j % 2 == 1 else ">") + entry[1] + \
@@ -86,14 +86,14 @@ class ResponsibilitiesOutput(Outputable):
 		message_json = "\t\t\t\"message\": \"" + _(RESPONSIBILITIES_INFO_TEXT) + "\",\n"
 		resp_json = ""
 
-		for i in sorted(set(i[0] for i in self.blame.blames)):
-			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i)), reverse=True)
+		for i in sorted(set((i[0], i[1]) for i in self.blame.blames)):
+			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i[0], i[1])), reverse=True)
 
 			if responsibilities:
-				author_email = self.changes.get_latest_email_by_author(i)
+				author_email = i[1]
 
 				resp_json += "{\n"
-				resp_json += "\t\t\t\t\"name\": \"" + i + "\",\n"
+				resp_json += "\t\t\t\t\"name\": \"" + i[0] + "\",\n"
 				resp_json += "\t\t\t\t\"email\": \"" + author_email + "\",\n"
 				resp_json += "\t\t\t\t\"gravatar\": \"" + gravatar.get_url(author_email) + "\",\n"
 				resp_json += "\t\t\t\t\"files\": [\n\t\t\t\t"
@@ -117,13 +117,13 @@ class ResponsibilitiesOutput(Outputable):
 		message_xml = "\t\t<message>" + _(RESPONSIBILITIES_INFO_TEXT) + "</message>\n"
 		resp_xml = ""
 
-		for i in sorted(set(i[0] for i in self.blame.blames)):
-			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i)), reverse=True)
+		for i in sorted(set((i[1], i[0]) for i in self.blame.blames)):
+			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i[0], i[1])), reverse=True)
 			if responsibilities:
-				author_email = self.changes.get_latest_email_by_author(i)
+				author_email = i[1]
 
 				resp_xml += "\t\t\t<author>\n"
-				resp_xml += "\t\t\t\t<name>" + i + "</name>\n"
+				resp_xml += "\t\t\t\t<name>" + i[0] + "</name>\n"
 				resp_xml += "\t\t\t\t<email>" + author_email + "</email>\n"
 				resp_xml += "\t\t\t\t<gravatar>" + gravatar.get_url(author_email) + "</gravatar>\n"
 				resp_xml += "\t\t\t\t<files>\n"
