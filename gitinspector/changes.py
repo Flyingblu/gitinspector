@@ -38,7 +38,7 @@ __changes_lock__ = threading.Lock()
 
 class FileDiff(object):
 	def __init__(self, string):
-		commit_line = string.split()
+		commit_line = string.split('\t')
 
 		if commit_line.__len__() == 3:
 			self.name = commit_line[2].strip()
@@ -49,7 +49,7 @@ class FileDiff(object):
 	def is_filediff_line(string):
 		if '|' in string or len(string) == 0:
 			return False
-		string = string.split()
+		string = string.split('\t')
 		# skip binary changes
 		if string[0] == '-':
 			return False
@@ -57,8 +57,16 @@ class FileDiff(object):
 
 	@staticmethod
 	def get_extension(string):
-		string = string.split("|")[0].strip().strip("{}").strip("\"").strip("'")
-		return os.path.splitext(string)[1][1:]
+		parts = string.rsplit(".", 1)
+
+		# If there are two parts, the second part is the extension
+		if len(parts) == 2:
+			extension = parts[1]
+			if extension.endswith('}'):
+				extension = extension[:-1]
+		else:
+			extension = ""
+		return extension
 
 	@staticmethod
 	def get_filename(string):
