@@ -32,12 +32,12 @@ class TimelineData(object):
 			key = None
 
 			if useweeks:
-				yearweek = datetime.date(int(i[0][0][0:4]), int(i[0][0][5:7]), int(i[0][0][8:10])).isocalendar()
+				yearweek = i[0][0].isocalendar()
 				key = (i[0][1], str(yearweek[0]) + "W" + "{0:02d}".format(yearweek[1]))
 			else:
-				key = (i[0][1], i[0][0][0:7])
+				key = (i[0][1], i[0][0].strftime("%Y-%m"))
 
-			if self.entries.get(key, None) == None:
+			if self.entries.get(key, None) is None:
 				self.entries[key] = i[1]
 			else:
 				self.entries[key].insertions += i[1].insertions
