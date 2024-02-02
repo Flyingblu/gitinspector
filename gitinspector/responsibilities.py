@@ -25,13 +25,13 @@ class ResponsibiltyEntry(object):
 
 class Responsibilities(object):
 	@staticmethod
-	def get(blame, author_name):
+	def get(blame, author_name, author_email):
 		author_blames = {}
 
 		for i in blame.blames.items():
-			if author_name == i[0][0]:
+			if author_name == i[0][0] and author_email == i[0][1]:
 				total_rows = i[1].rows - i[1].comments
 				if total_rows > 0:
-					author_blames[i[0][1]] = total_rows
+					author_blames[i[0][2]] = total_rows
 
 		return sorted(author_blames.items())

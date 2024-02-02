@@ -33,9 +33,9 @@ class TimelineData(object):
 
 			if useweeks:
 				yearweek = i[0][0].isocalendar()
-				key = (i[0][1], str(yearweek[0]) + "W" + "{0:02d}".format(yearweek[1]))
+				key = (i[0][1], i[0][2], str(yearweek[0]) + "W" + "{0:02d}".format(yearweek[1]))
 			else:
-				key = (i[0][1], i[0][0].strftime("%Y-%m"))
+				key = (i[0][1], i[0][2], i[0][0].strftime("%Y-%m"))
 
 			if self.entries.get(key, None) is None:
 				self.entries[key] = i[1]
@@ -48,8 +48,8 @@ class TimelineData(object):
 			total_deletions = 0
 
 			for author in self.get_authors():
-				entry = self.entries.get((author[0], period), None)
-				if entry != None:
+				entry = self.entries.get((author[0], author[1], period), None)
+				if entry is not None:
 					total_insertions += entry.insertions
 					total_deletions += entry.deletions
 
@@ -57,32 +57,32 @@ class TimelineData(object):
 			                                        total_insertions + total_deletions)
 
 	def get_periods(self):
-		return sorted(set([i[1] for i in self.entries]))
+		return sorted(set([i[2] for i in self.entries]))
 
 	def get_total_changes_in_period(self, period):
 		return self.total_changes_by_period[period]
 
 	def get_authors(self):
-		return sorted(set([(i[0][0], self.changes.get_latest_email_by_author(i[0][0])) for i in self.entries.items()]))
+		return sorted(set([(i[0], i[1]) for i in self.entries]))
 
-	def get_author_signs_in_period(self, author, period, multiplier):
-		authorinfo = self.entries.get((author, period), None)
+	def get_author_signs_in_period(self, author, email, period, multiplier):
+		authorinfo = self.entries.get((author, email, period), None)
 		total = float(self.total_changes_by_period[period][2])
 
 		if authorinfo:
-			i = multiplier * (self.entries[(author, period)].insertions / total)
-			j = multiplier * (self.entries[(author, period)].deletions / total)
+			i = multiplier * (authorinfo.insertions / total)
+			j = multiplier * (authorinfo.deletions / total)
 			return (int(i), int(j))
 		else:
 			return (0, 0)
 
-	def get_author_modification_in_period(self, author, period):
-		authorinfo = self.entries.get((author, period), None)
+	def get_author_modification_in_period(self, author, email, period):
+		authorinfo = self.entries.get((author, email, period), None)
 		total = float(self.total_changes_by_period[period][2])
 
 		if authorinfo:
-			i = self.entries[(author, period)].insertions
-			j = self.entries[(author, period)].deletions
+			i = authorinfo.insertions
+			j = authorinfo.deletions
 			percentage = (i + j) / total
 			return (int(i), int(j), percentage)
 		else:
@@ -102,11 +102,11 @@ class TimelineData(object):
 
 					multiplier += 0.25
 
-	def is_author_in_period(self, period, author):
-		return self.entries.get((author, period), None) != None
+	def is_author_in_period(self, period, author, email):
+		return self.entries.get((author, email, period), None) != None
 
-	def is_author_in_periods(self, periods, author):
+	def is_author_in_periods(self, periods, author, email):
 		for period in periods:
-			if self.is_author_in_period(period, author):
+			if self.is_author_in_period(period, author, email):
 				return True
 		return False

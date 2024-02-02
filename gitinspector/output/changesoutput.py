@@ -56,12 +56,13 @@ class ChangesOutput(Outputable):
 
 				changes_xml += "<tr " + ("class=\"odd\">" if i % 2 == 1 else ">")
 
-				author_email = self.changes.get_latest_email_by_author(entry)
+				author_email = entry[1]
+				author = entry[0]
 				if format.get_selected() == "html":
 					changes_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(
-					               gravatar.get_url(author_email), entry, author_email)
+					               gravatar.get_url(author_email), author, author_email)
 				else:
-					changes_xml += "<td>{0}<br/><i>{1}<i/></td>".format(entry, author_email)
+					changes_xml += "<td>{0}<br/><i>{1}<i/></td>".format(author, author_email)
 
 				changes_xml += "<td>" + str(authorinfo.commits) + "</td>"
 				changes_xml += "<td>" + str(modifications) + "</td>"
@@ -111,11 +112,11 @@ class ChangesOutput(Outputable):
 			changes_json = ""
 
 			for i in sorted(authorinfo_list):
-				author_email = self.changes.get_latest_email_by_author(i)
+				author_email = i[1]
 				authorinfo = authorinfo_list.get(i)
 
 				percentage = 0 if total_changes == 0 else (authorinfo.insertions + authorinfo.deletions) / total_changes * 100
-				name_json = "\t\t\t\t\"name\": \"" + i + "\",\n"
+				name_json = "\t\t\t\t\"name\": \"" + i[0] + "\",\n"
 				email_json = "\t\t\t\t\"email\": \"" + author_email + "\",\n"
 				gravatar_json = "\t\t\t\t\"gravatar\": \"" + gravatar.get_url(author_email) + "\",\n"
 				commits_json = "\t\t\t\t\"commits\": " + str(authorinfo.commits) + ",\n"
@@ -172,11 +173,11 @@ class ChangesOutput(Outputable):
 			changes_xml = ""
 
 			for i in sorted(authorinfo_list):
-				author_email = self.changes.get_latest_email_by_author(i)
+				author_email = i[1]
 				authorinfo = authorinfo_list.get(i)
 
 				percentage = 0 if total_changes == 0 else (authorinfo.insertions + authorinfo.deletions) / total_changes * 100
-				name_xml = "\t\t\t\t<name>" + i + "</name>\n"
+				name_xml = "\t\t\t\t<name>" + i[0] + "</name>\n"
 				email_xml = "\t\t\t\t<email>" + author_email + "</email>\n"
 				gravatar_xml = "\t\t\t\t<gravatar>" + gravatar.get_url(author_email) + "</gravatar>\n"
 				commits_xml = "\t\t\t\t<commits>" + str(authorinfo.commits) + "</commits>\n"

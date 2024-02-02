@@ -103,8 +103,8 @@ class Commit(object):
 	def is_commit_line(string):
 		return string.startswith('"COMMIT|') or string.startswith('COMMIT|')
 
+
 class AuthorInfo(object):
-	email = None
 	insertions = 0
 	deletions = 0
 	commits = 0
@@ -112,10 +112,10 @@ class AuthorInfo(object):
 
 PROGRESS_TEXT = N_("Fetching and calculating primary statistics (1 of 2): {0:.0f}%")
 
+
 class Changes(object):
 	authors = {}
 	authors_dateinfo = {}
-	authors_by_email = {}
 	emails_by_author = {}
 
 	def __init__(self, repo, hard):
@@ -171,7 +171,6 @@ class Changes(object):
 		try:
 			self.authors.update(other.authors)
 			self.authors_dateinfo.update(other.authors_dateinfo)
-			self.authors_by_email.update(other.authors_by_email)
 			self.emails_by_author.update(other.emails_by_author)
 
 			for commit in other.commits:
@@ -196,7 +195,6 @@ class Changes(object):
 				j = j[1:-1]
 				(author, email) = Commit.get_author_and_email(j)
 				self.emails_by_author[author] = email
-				self.authors_by_email[email] = author
 
 			if Commit.is_commit_line(j) or i == end_idx - 1:
 				if found_valid_extension:
@@ -240,26 +238,16 @@ class Changes(object):
 	def get_authorinfo_list(self):
 		if not self.authors:
 			for i in self.commits:
-				Changes.modify_authorinfo(self.authors, i.author, i)
+				Changes.modify_authorinfo(self.authors, (i.author, i.email), i)
 
 		return self.authors
 
 	def get_authordateinfo_list(self):
 		if not self.authors_dateinfo:
 			for i in self.commits:
-				Changes.modify_authorinfo(self.authors_dateinfo, (i.date, i.author), i)
+				Changes.modify_authorinfo(self.authors_dateinfo, (i.date, i.author, i.email), i)
 
 		return self.authors_dateinfo
-
-	def get_latest_author_by_email(self, name):
-		if not hasattr(name, "decode"):
-			name = str.encode(name)
-		try:
-			name = name.decode("unicode_escape", "ignore")
-		except UnicodeEncodeError:
-			pass
-
-		return self.authors_by_email[name]
 
 	def get_latest_email_by_author(self, name):
 		return self.emails_by_author[name]

@@ -56,36 +56,32 @@ class BlameThread(threading.Thread):
 
 	def __clear_blamechunk_info__(self):
 		self.blamechunk_email = None
+		self.blamechunk_author = None
 		self.blamechunk_is_last = False
 		self.blamechunk_is_prior = False
 		self.blamechunk_revision = None
 		self.blamechunk_time = None
 
 	def __handle_blamechunk_content__(self, content):
-		author = None
 		(comments, self.is_inside_comment) = comment.handle_comment_block(self.is_inside_comment, self.extension, content)
 
 		if self.blamechunk_is_prior and interval.get_since():
 			return
-		try:
-			author = self.changes.get_latest_author_by_email(self.blamechunk_email)
-		except KeyError:
-			return
 
-		if not filtering.set_filtered(author, "author") and not \
+		if not filtering.set_filtered(self.blamechunk_author, "author") and not \
 		       filtering.set_filtered(self.blamechunk_email, "email") and not \
 		       filtering.set_filtered(self.blamechunk_revision, "revision"):
 
 			__blame_lock__.acquire() # Global lock used to protect calls from here...
 
-			if self.blames.get((author, self.filename), None) == None:
-				self.blames[(author, self.filename)] = BlameEntry()
+			if self.blames.get((self.blamechunk_author, self.blamechunk_email, self.filename), None) is None:
+				self.blames[(self.blamechunk_author, self.blamechunk_email, self.filename)] = BlameEntry()
 
-			self.blames[(author, self.filename)].comments += comments
-			self.blames[(author, self.filename)].rows += 1
+			self.blames[(self.blamechunk_author, self.blamechunk_email, self.filename)].comments += comments
+			self.blames[(self.blamechunk_author, self.blamechunk_email, self.filename)].rows += 1
 
 			if (self.blamechunk_time - self.changes.first_commit_date).days > 0:
-				self.blames[(author, self.filename)].skew += ((self.changes.last_commit_date - self.blamechunk_time).days /
+				self.blames[(self.blamechunk_author, self.blamechunk_email, self.filename)].skew += ((self.changes.last_commit_date - self.blamechunk_time).days /
 				                                             (7.0 if self.useweeks else AVG_DAYS_PER_MONTH))
 
 			__blame_lock__.release() # ...to here.
@@ -109,6 +105,8 @@ class BlameThread(threading.Thread):
 				self.blamechunk_is_prior = True
 			elif keyval[0] == "author-mail":
 				self.blamechunk_email = keyval[1].lstrip("<").rstrip(">")
+			elif keyval[0] == "author":
+				self.blamechunk_author = keyval[1].strip()
 			elif keyval[0] == "author-time":
 				self.blamechunk_time = datetime.date.fromtimestamp(int(keyval[1]))
 			elif keyval[0] == "filename":
@@ -190,11 +188,12 @@ class Blame(object):
 	def get_summed_blames(self):
 		summed_blames = {}
 		for i in self.blames.items():
-			if summed_blames.get(i[0][0], None) == None:
-				summed_blames[i[0][0]] = BlameEntry()
+			key = (i[0][0], i[0][1])
+			if summed_blames.get(key, None) == None:
+				summed_blames[key] = BlameEntry()
 
-			summed_blames[i[0][0]].rows += i[1].rows
-			summed_blames[i[0][0]].skew += i[1].skew
-			summed_blames[i[0][0]].comments += i[1].comments
+			summed_blames[key].rows += i[1].rows
+			summed_blames[key].skew += i[1].skew
+			summed_blames[key].comments += i[1].comments
 
 		return summed_blames

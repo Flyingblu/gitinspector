@@ -56,11 +56,12 @@ class BlameOutput(Outputable):
 			work_percentage = str("{0:.2f}".format(100.0 * entry[1].rows / total_blames))
 			blame_xml += "<tr " + ("class=\"odd\">" if i % 2 == 1 else ">")
 
-			author_email = self.changes.get_latest_email_by_author(entry[0])
+			author_email = entry[0][1]
+			author = entry[0][0]
 			if format.get_selected() == "html":
-				blame_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(gravatar.get_url(author_email), entry[0], author_email)
+				blame_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(gravatar.get_url(author_email), author, author_email)
 			else:
-				blame_xml += "<td>{0}<br/><i>{1}<i/></td>".format(entry[0], author_email)
+				blame_xml += "<td>{0}<br/><i>{1}<i/></td>".format(author, author_email)
 
 			blame_xml += "<td>" + str(entry[1].rows) + "</td>"
 			blame_xml += "<td>" + ("{0:.1f}".format(Blame.get_stability(entry[0], entry[1].rows, self.changes)) + "</td>")
@@ -99,9 +100,9 @@ class BlameOutput(Outputable):
 		blame_json = ""
 
 		for i in sorted(self.blame.get_summed_blames().items()):
-			author_email = self.changes.get_latest_email_by_author(i[0])
+			author_email = i[0][1]
 
-			name_json = "\t\t\t\t\"name\": \"" + i[0] + "\",\n"
+			name_json = "\t\t\t\t\"name\": \"" + i[0][0] + "\",\n"
 			email_json = "\t\t\t\t\"email\": \"" + author_email + "\",\n"
 			gravatar_json = "\t\t\t\t\"gravatar\": \"" + gravatar.get_url(author_email) + "\",\n"
 			rows_json = "\t\t\t\t\"rows\": " + str(i[1].rows) + ",\n"
@@ -137,9 +138,9 @@ class BlameOutput(Outputable):
 		blame_xml = ""
 
 		for i in sorted(self.blame.get_summed_blames().items()):
-			author_email = self.changes.get_latest_email_by_author(i[0])
+			author_email = i[0][1]
 
-			name_xml = "\t\t\t\t<name>" + i[0] + "</name>\n"
+			name_xml = "\t\t\t\t<name>" + i[0][0] + "</name>\n"
 			email_xml = "\t\t\t\t<email>" + author_email + "</email>\n"
 			gravatar_xml = "\t\t\t\t<gravatar>" + gravatar.get_url(author_email) + "</gravatar>\n"
 			rows_xml = "\t\t\t\t<rows>" + str(i[1].rows) + "</rows>\n"

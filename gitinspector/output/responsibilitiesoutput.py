@@ -39,11 +39,11 @@ class ResponsibilitiesOutput(Outputable):
 	def output_text(self):
 		print("\n" + textwrap.fill(_(RESPONSIBILITIES_INFO_TEXT) + ":", width=terminal.get_size()[0]))
 
-		for i in sorted(set(i[0] for i in self.blame.blames)):
-			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i)), reverse=True)
+		for i in sorted(set((i[0], i[1]) for i in self.blame.blames)):
+			responsibilities = sorted(((i[1], i[0]) for i in resp.Responsibilities.get(self.blame, i[0], i[1])), reverse=True)
 
 			if responsibilities:
-				print("\n" + i, _(MOSTLY_RESPONSIBLE_FOR_TEXT) + ":")
+				print("\n" + i[0] + '|' + i[1], _(MOSTLY_RESPONSIBLE_FOR_TEXT) + ":")
 
 				for j, entry in enumerate(responsibilities):
 					(width, _unused) = terminal.get_size()
