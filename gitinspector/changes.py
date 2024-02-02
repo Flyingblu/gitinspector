@@ -25,7 +25,7 @@ import multiprocessing
 import os
 import subprocess
 import threading
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .localization import N_
 from . import extensions, filtering, format, interval, terminal
@@ -157,6 +157,11 @@ class Changes(object):
 
 		print('Changes: finished submitting analytical jobs ({} commits)'.format(num_commits))
 
+		for future in as_completed(futures):
+			exception = future.exception()
+			if exception:
+				print('Changes: EXCEPTION THROWN: {}'.format(exception))
+
 		worker_pool.shutdown()
 		self.commits = sorted(self.commits)
 		print('Changes: finished analyzing commits')
@@ -184,25 +189,22 @@ class Changes(object):
 
 	def process_commits(self, start_idx, end_idx):
 		commit = None
-		found_valid_extension = False
 		is_filtered = False
 
 		for i in range(start_idx, end_idx):
 			j = self.lines[i]
 
-			if Commit.is_commit_line(j) or i == end_idx - 1:
-				if found_valid_extension:
+			if Commit.is_commit_line(j):
+				if not is_filtered and commit is not None:
 					self.commits.append(commit)
 
-				found_valid_extension = False
 				is_filtered = False
 				commit = Commit(j)
 
-				if Commit.is_commit_line(j) and \
-						(filtering.set_filtered(commit.author, "author") or \
+				if filtering.set_filtered(commit.author, "author") or \
 						 filtering.set_filtered(commit.email, "email") or \
 						 filtering.set_filtered(commit.sha, "revision") or \
-						 filtering.set_filtered(commit.sha, "message")):
+						 filtering.set_filtered(commit.sha, "message"):
 					is_filtered = True
 
 			if FileDiff.is_filediff_line(j) and not \
@@ -210,9 +212,12 @@ class Changes(object):
 				extensions.add_located(FileDiff.get_extension(j))
 
 				if FileDiff.is_valid_extension(j):
-					found_valid_extension = True
 					filediff = FileDiff(j)
 					commit.add_filediff(filediff)
+
+			if i == end_idx - 1:
+				if not is_filtered and commit is not None:
+					self.commits.append(commit)
 
 	def get_commits(self):
 		return self.commits
