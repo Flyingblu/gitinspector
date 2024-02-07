@@ -45,8 +45,8 @@ class ChangesOutput(Outputable):
 
 		if authorinfo_list:
 			changes_xml += "<p>" + _(HISTORICAL_INFO_TEXT) + ".</p><div><table id=\"changes\" class=\"git\">"
-			changes_xml += '<thead><tr> <th class="sticky-header">{0}</th> <th class="sticky-header">{1}</th> <th class="sticky-header">{2}</th> <th class="sticky-header">{3}</th> <th class="sticky-header">{4}</th> <th class="sticky-header">{5}</th>'.format(
-			               _("Author"), _("Commits"), _("Modifications"), _("Insertions"), _("Deletions"), _("% of changes"))
+			changes_xml += '<thead><tr> <th class="sticky-header">{0}</th> <th class="sticky-header">{1}</th> <th class="sticky-header">{2}</th> <th class="sticky-header">{3}</th> <th class="sticky-header">{4}</th> <th class="sticky-header">{5}<th class="sticky-header">{6}</th></th>'.format(
+			               _("Author"), _("Email"), _("Commits"), _("Modifications"), _("Insertions"), _("Deletions"), _("% of changes"))
 			changes_xml += "</tr></thead><tbody>"
 
 			for i, entry in enumerate(sorted(authorinfo_list)):
@@ -59,10 +59,10 @@ class ChangesOutput(Outputable):
 				author_email = entry[1]
 				author = entry[0]
 				if format.get_selected() == "html":
-					changes_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(
+					changes_xml += "<td><img src=\"{0}\"/>{1}<td/><td>{2}</td>".format(
 					               gravatar.get_url(author_email), author, author_email)
 				else:
-					changes_xml += "<td>{0}<br/><i>{1}<i/></td>".format(author, author_email)
+					changes_xml += "<td>{0}</td><td>{1}</td>".format(author, author_email)
 
 				changes_xml += "<td>" + str(authorinfo.commits) + "</td>"
 				changes_xml += "<td>" + str(modifications) + "</td>"
@@ -75,7 +75,7 @@ class ChangesOutput(Outputable):
 				if sorted(authorinfo_list)[-1] != entry:
 					chart_data += ", "
 
-			changes_xml += ("<tfoot><tr> <td colspan=\"6\">&nbsp;</td> </tr></tfoot></tbody></table>")
+			changes_xml += ("<tfoot><tr> <td colspan=\"7\">&nbsp;</td> </tr></tfoot></tbody></table>")
 			changes_xml += "<div class=\"chart\" id=\"changes_chart\"></div></div>"
 			changes_xml += "<script type=\"text/javascript\">"
 			changes_xml += "    changes_plot = $.plot($(\"#changes_chart\"), [{0}], {{".format(chart_data)

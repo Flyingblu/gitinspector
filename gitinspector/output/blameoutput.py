@@ -42,8 +42,8 @@ class BlameOutput(Outputable):
 	def output_html(self):
 		blame_xml = "<div><div class=\"box\">"
 		blame_xml += "<p>" + _(BLAME_INFO_TEXT) + ".</p><div><table id=\"blame\" class=\"git\">"
-		blame_xml += '<thead><tr> <th class="sticky-header">{0}</th> <th class="sticky-header">{1}</th> <th class="sticky-header">{2}</th> <th class="sticky-header">{3}</th> <th class="sticky-header">{4}</th> </tr></thead>'.format(
-		             _("Author"), _("Rows"), _("Stability"), _("Age"), _("% in comments"))
+		blame_xml += '<thead><tr> <th class="sticky-header">{0}</th> <th class="sticky-header">{1}</th> <th class="sticky-header">{2}</th> <th class="sticky-header">{3}</th> <th class="sticky-header">{4}</th> <th class="sticky-header">{5}</th> </tr></thead>'.format(
+		             _("Author"), _("Email"), _("Rows"), _("Stability"), _("Age"), _("% in comments"))
 		blame_xml += "<tbody>"
 		chart_data = ""
 		blames = sorted(self.blame.get_summed_blames().items())
@@ -59,9 +59,9 @@ class BlameOutput(Outputable):
 			author_email = entry[0][1]
 			author = entry[0][0]
 			if format.get_selected() == "html":
-				blame_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(gravatar.get_url(author_email), author, author_email)
+				blame_xml += "<td><img src=\"{0}\"/>{1}<td/><td>{2}<td/>".format(gravatar.get_url(author_email), author, author_email)
 			else:
-				blame_xml += "<td>{0}<br/><i>{1}<i/></td>".format(author, author_email)
+				blame_xml += "<td>{0}</td><td>{1}</td>".format(author, author_email)
 
 			blame_xml += "<td>" + str(entry[1].rows) + "</td>"
 			blame_xml += "<td>" + ("{0:.1f}".format(Blame.get_stability(entry[0], entry[1].rows, self.changes)) + "</td>")
@@ -74,7 +74,7 @@ class BlameOutput(Outputable):
 			if blames[-1] != entry:
 				chart_data += ", "
 
-		blame_xml += "<tfoot><tr> <td colspan=\"5\">&nbsp;</td> </tr></tfoot></tbody></table>"
+		blame_xml += "<tfoot><tr> <td colspan=\"6\">&nbsp;</td> </tr></tfoot></tbody></table>"
 		blame_xml += "<div class=\"chart\" id=\"blame_chart\"></div></div>"
 		blame_xml += "<script type=\"text/javascript\">"
 		blame_xml += "    blame_plot = $.plot($(\"#blame_chart\"), [{0}], {{".format(chart_data)

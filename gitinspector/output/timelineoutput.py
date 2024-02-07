@@ -60,7 +60,7 @@ def __output_row__text__(timeline_data, periods, names):
 	print("")
 
 def __output_row__html__(timeline_data, periods, names):
-	timeline_xml = '<table class=\"git full\"><thead><tr><th class="sticky-header">' + _("Author") + "</th>"
+	timeline_xml = '<table class=\"git full\"><thead><tr><th class="sticky-header">' + _("Author") + "</th>" + '<th class="sticky-header">' +  _("Email") + "</th>"
 
 	for period in periods:
 		timeline_xml += '<th class="sticky-header">' + str(period) + "</th>"
@@ -73,9 +73,9 @@ def __output_row__html__(timeline_data, periods, names):
 			timeline_xml += "<tr" + (" class=\"odd\">" if i % 2 == 1 else ">")
 
 			if format.get_selected() == "html":
-				timeline_xml += "<td><img src=\"{0}\"/>{1}<br/><i>{2}<i/></td>".format(gravatar.get_url(name[1]), name[0], name[1])
+				timeline_xml += "<td><img src=\"{0}\"/>{1}<td/><td>{2}</td>".format(gravatar.get_url(name[1]), name[0], name[1])
 			else:
-				timeline_xml += "<td>{0}<br/><i>{1}<i/></td>".format(name[0], name[1])
+				timeline_xml += "<td>{0}</td><td>{1}</td>".format(name[0], name[1])
 
 			for period in periods:
 				modification = timeline_data.get_author_modification_in_period(name[0], name[1], period)
@@ -87,7 +87,7 @@ def __output_row__html__(timeline_data, periods, names):
 			timeline_xml += "</tr>"
 			i = i + 1
 
-	timeline_xml += "<tfoot><tr><td><strong>" + _(MODIFIED_ROWS_TEXT) + "</strong></td>"
+	timeline_xml += '<tfoot><tr><td colspan="2"><strong>' + _(MODIFIED_ROWS_TEXT) + "</strong></td>"
 
 	for period in periods:
 		total_changes = timeline_data.get_total_changes_in_period(period)
